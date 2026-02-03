@@ -1,12 +1,20 @@
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import * as ImagePicker from 'expo-image-picker';
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { Alert, Button, Image, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
-import { storeData } from '../utils/storage';
+import { RootStackParamList } from '../App';
+import { Profile, storeData } from '../utils/storage';
 
-const ProfileSetupScreen = ({ navigation }) => {
-    const [name, setName] = useState('');
-    const [email, setEmail] = useState('');
-    const [image, setImage] = useState(null);
+type ProfileSetupScreenNavigationProp = NativeStackNavigationProp<RootStackParamList, 'ProfileSetup'>;
+
+interface Props {
+    navigation: ProfileSetupScreenNavigationProp;
+}
+
+const ProfileSetupScreen: React.FC<Props> = ({ navigation }) => {
+    const [name, setName] = useState<string>('');
+    const [email, setEmail] = useState<string>('');
+    const [image, setImage] = useState<string | null>(null);
 
     const pickImage = async () => {
         const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
@@ -33,7 +41,7 @@ const ProfileSetupScreen = ({ navigation }) => {
             return;
         }
 
-        const profile = { name, email, image };
+        const profile: Profile = { name, email, image };
         await storeData('profile', profile);
         navigation.replace('MainTabs');
     };

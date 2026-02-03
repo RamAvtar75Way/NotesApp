@@ -1,13 +1,13 @@
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Image, StyleSheet, Text, View } from 'react-native';
-import { getData } from '../utils/storage';
+import { getData, Profile } from '../utils/storage';
 
-const ProfileScreen = () => {
-    const [profile, setProfile] = useState(null);
+const ProfileScreen: React.FC = () => {
+    const [profile, setProfile] = useState<Profile | null>(null);
 
     useEffect(() => {
         const loadProfile = async () => {
-            const data = await getData('profile');
+            const data = await getData<Profile>('profile');
             setProfile(data);
         };
         loadProfile();

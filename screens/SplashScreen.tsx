@@ -1,8 +1,16 @@
-import { useEffect } from 'react';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import React, { useEffect } from 'react';
 import { ActivityIndicator, StyleSheet, Text, View } from 'react-native';
+import { RootStackParamList } from '../App';
 import { getData } from '../utils/storage';
 
-const SplashScreen = ({ navigation }) => {
+type SplashScreenNavigationProp = NativeStackNavigationProp<RootStackParamList, 'Splash'>;
+
+interface Props {
+  navigation: SplashScreenNavigationProp;
+}
+
+const SplashScreen: React.FC<Props> = ({ navigation }) => {
   useEffect(() => {
     const checkProfile = async () => {
       const profile = await getData('profile');

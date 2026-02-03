@@ -1,6 +1,12 @@
+import React from 'react';
 import { Image, StyleSheet, Text, View } from 'react-native';
+import { Note } from '../utils/storage';
 
-const NoteCard = ({ note }) => {
+interface NoteCardProps {
+    note: Note;
+}
+
+const NoteCard: React.FC<NoteCardProps> = ({ note }) => {
     return (
         <View style={styles.card}>
             {note.image && <Image source={{ uri: note.image }} style={styles.image} />}

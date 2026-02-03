@@ -1,5 +1,6 @@
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import React from 'react';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 import TabNavigator from './navigation/TabNavigator';
@@ -7,7 +8,14 @@ import AddNoteScreen from './screens/AddNoteScreen';
 import ProfileSetupScreen from './screens/ProfileSetupScreen';
 import SplashScreen from './screens/SplashScreen';
 
-const Stack = createNativeStackNavigator();
+export type RootStackParamList = {
+    Splash: undefined;
+    ProfileSetup: undefined;
+    MainTabs: undefined;
+    AddNote: undefined;
+};
+
+const Stack = createNativeStackNavigator<RootStackParamList>();
 
 export default function App() {
     return (

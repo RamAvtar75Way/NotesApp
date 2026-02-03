@@ -1,16 +1,24 @@
 import { useFocusEffect } from '@react-navigation/native';
-import { useCallback, useState } from 'react';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import React, { useCallback, useState } from 'react';
 import { Button, FlatList, StyleSheet, Text, View } from 'react-native';
+import { RootStackParamList } from '../App';
 import NoteCard from '../components/NoteCard';
-import { getData } from '../utils/storage';
+import { getData, Note } from '../utils/storage';
 
-const HomeScreen = ({ navigation }) => {
-    const [notes, setNotes] = useState([]);
+type HomeScreenNavigationProp = NativeStackNavigationProp<RootStackParamList, 'AddNote'>;
+
+interface Props {
+    navigation: HomeScreenNavigationProp;
+}
+
+const HomeScreen: React.FC<Props> = ({ navigation }) => {
+    const [notes, setNotes] = useState<Note[]>([]);
 
     useFocusEffect(
         useCallback(() => {
             const fetchNotes = async () => {
-                const storedNotes = await getData('notes');
+                const storedNotes = await getData<Note[]>('notes');
                 if (storedNotes) {
                     setNotes(storedNotes);
                 }

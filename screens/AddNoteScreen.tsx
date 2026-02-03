@@ -1,13 +1,21 @@
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import * as ImagePicker from 'expo-image-picker';
 import * as Location from 'expo-location';
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { Alert, Button, Image, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
-import { getData, storeData } from '../utils/storage';
+import { RootStackParamList } from '../App';
+import { getData, Note, NoteLocation, storeData } from '../utils/storage';
 
-const AddNoteScreen = ({ navigation }) => {
-    const [text, setText] = useState('');
-    const [image, setImage] = useState(null);
-    const [location, setLocation] = useState(null);
+type AddNoteScreenNavigationProp = NativeStackNavigationProp<RootStackParamList, 'AddNote'>;
+
+interface Props {
+    navigation: AddNoteScreenNavigationProp;
+}
+
+const AddNoteScreen: React.FC<Props> = ({ navigation }) => {
+    const [text, setText] = useState<string>('');
+    const [image, setImage] = useState<string | null>(null);
+    const [location, setLocation] = useState<NoteLocation | null>(null);
 
     const pickImage = async () => {
         const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
@@ -44,14 +52,14 @@ const AddNoteScreen = ({ navigation }) => {
             return;
         }
 
-        const newNote = {
+        const newNote: Note = {
             id: Date.now().toString(),
             text,
             image,
             location,
         };
 
-        const existingNotes = (await getData('notes')) || [];
+        const existingNotes = (await getData<Note[]>('notes')) || [];
         const updatedNotes = [...existingNotes, newNote];
         await storeData('notes', updatedNotes);
         navigation.goBack();
