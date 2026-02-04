@@ -3,6 +3,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import React from 'react';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
+import { COLORS } from './constants/theme';
 import TabNavigator from './navigation/TabNavigator';
 import AddNoteScreen from './screens/AddNoteScreen';
 import ProfileSetupScreen from './screens/ProfileSetupScreen';
@@ -40,7 +41,16 @@ export default function App() {
                     <Stack.Screen
                         name="AddNote"
                         component={AddNoteScreen}
-                        options={{ title: 'Add New Note' }}
+                        options={{
+                            title: 'Add New Note',
+                            headerStyle: {
+                                backgroundColor: COLORS.primary,
+                            },
+                            headerTintColor: COLORS.surface,
+                            headerTitleStyle: {
+                                fontWeight: 'bold',
+                            },
+                        }}
                     />
                 </Stack.Navigator>
             </NavigationContainer>

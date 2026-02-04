@@ -1,6 +1,7 @@
 import { Ionicons } from '@expo/vector-icons';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import React from 'react';
+import { COLORS, SHADOWS } from '../constants/theme';
 import HomeScreen from '../screens/HomeScreen';
 import ProfileScreen from '../screens/ProfileScreen';
 
@@ -22,16 +23,31 @@ const TabNavigator = () => {
                     } else if (route.name === 'Profile') {
                         iconName = focused ? 'person' : 'person-outline';
                     }
-                    // Default icon if none matched
                     if (!iconName) iconName = 'list';
                     return <Ionicons name={iconName} size={size} color={color} />;
                 },
-                tabBarActiveTintColor: 'tomato',
-                tabBarInactiveTintColor: 'gray',
+                tabBarActiveTintColor: COLORS.primary,
+                tabBarInactiveTintColor: COLORS.textSecondary,
+                tabBarStyle: {
+                    backgroundColor: COLORS.surface,
+                    borderTopWidth: 0,
+                    ...SHADOWS.medium,
+                    elevation: 10,
+                    height: 60,
+                    paddingBottom: 5,
+                    paddingTop: 5,
+                },
+                headerStyle: {
+                    backgroundColor: COLORS.primary,
+                },
+                headerTintColor: COLORS.surface,
+                headerTitleStyle: {
+                    fontWeight: 'bold',
+                },
             })}
         >
-            <Tab.Screen name="Home" component={HomeScreen} />
-            <Tab.Screen name="Profile" component={ProfileScreen} />
+            <Tab.Screen name="Home" component={HomeScreen} options={{ title: 'My Notes' }} />
+            <Tab.Screen name="Profile" component={ProfileScreen} options={{ title: 'My Profile' }} />
         </Tab.Navigator>
     );
 };

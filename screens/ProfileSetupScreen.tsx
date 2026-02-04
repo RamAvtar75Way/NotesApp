@@ -1,8 +1,10 @@
+import { Ionicons } from '@expo/vector-icons';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import * as ImagePicker from 'expo-image-picker';
 import React, { useState } from 'react';
-import { Alert, Button, Image, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { Alert, Image, SafeAreaView, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { RootStackParamList } from '../App';
+import { COLORS, FONTS, SHADOWS, SPACING } from '../constants/theme';
 import { Profile, storeData } from '../utils/storage';
 
 type ProfileSetupScreenNavigationProp = NativeStackNavigationProp<RootStackParamList, 'ProfileSetup'>;
@@ -47,75 +49,162 @@ const ProfileSetupScreen: React.FC<Props> = ({ navigation }) => {
     };
 
     return (
-        <View style={styles.container}>
-            <Text style={styles.header}>Create Profile</Text>
+        <SafeAreaView style={styles.safeArea}>
+            <ScrollView contentContainerStyle={styles.container}>
+                <View style={styles.headerContainer}>
+                    <Text style={styles.header}>Create Profile</Text>
+                    <Text style={styles.subHeader}>Let's get you started</Text>
+                </View>
 
-            <TouchableOpacity onPress={pickImage} style={styles.imageContainer}>
-                {image ? (
-                    <Image source={{ uri: image }} style={styles.image} />
-                ) : (
-                    <View style={styles.placeholder}>
-                        <Text>Pick Image</Text>
+                <View style={styles.formContainer}>
+                    <TouchableOpacity onPress={pickImage} style={styles.imageContainer}>
+                        {image ? (
+                            <Image source={{ uri: image }} style={styles.image} />
+                        ) : (
+                            <View style={styles.placeholder}>
+                                <Ionicons name="camera-outline" size={40} color={COLORS.textSecondary} />
+                                <Text style={styles.placeholderText}>Add Photo</Text>
+                            </View>
+                        )}
+                        <View style={styles.editIconContainer}>
+                            <Ionicons name="pencil" size={16} color={COLORS.surface} />
+                        </View>
+                    </TouchableOpacity>
+
+                    <View style={styles.inputGroup}>
+                        <Text style={styles.label}>Full Name</Text>
+                        <TextInput
+                            style={styles.input}
+                            placeholder="John Doe"
+                            placeholderTextColor={COLORS.textSecondary}
+                            value={name}
+                            onChangeText={setName}
+                        />
                     </View>
-                )}
-            </TouchableOpacity>
 
-            <TextInput
-                style={styles.input}
-                placeholder="Name"
-                value={name}
-                onChangeText={setName}
-            />
-            <TextInput
-                style={styles.input}
-                placeholder="Email"
-                value={email}
-                onChangeText={setEmail}
-                keyboardType="email-address"
-                autoCapitalize="none"
-            />
+                    <View style={styles.inputGroup}>
+                        <Text style={styles.label}>Email Address</Text>
+                        <TextInput
+                            style={styles.input}
+                            placeholder="john@example.com"
+                            placeholderTextColor={COLORS.textSecondary}
+                            value={email}
+                            onChangeText={setEmail}
+                            keyboardType="email-address"
+                            autoCapitalize="none"
+                        />
+                    </View>
 
-            <Button title="Save Profile" onPress={saveProfile} />
-        </View>
+                    <TouchableOpacity style={styles.button} onPress={saveProfile}>
+                        <Text style={styles.buttonText}>Save Profile</Text>
+                    </TouchableOpacity>
+                </View>
+            </ScrollView>
+        </SafeAreaView>
     );
 };
 
 const styles = StyleSheet.create({
-    container: {
+    safeArea: {
         flex: 1,
-        padding: 20,
-        justifyContent: 'center',
-        backgroundColor: '#fff',
+        backgroundColor: COLORS.background,
+    },
+    container: {
+        flexGrow: 1,
+        padding: SPACING.l,
+    },
+    headerContainer: {
+        marginTop: SPACING.xl,
+        marginBottom: SPACING.xxl,
+        alignItems: 'center',
     },
     header: {
-        fontSize: 24,
+        fontSize: 32,
         fontWeight: 'bold',
-        marginBottom: 20,
-        textAlign: 'center',
+        color: COLORS.text,
+        marginBottom: SPACING.xs,
+    },
+    subHeader: {
+        fontSize: FONTS.size.m,
+        color: COLORS.textSecondary,
+    },
+    formContainer: {
+        backgroundColor: COLORS.surface,
+        borderRadius: SPACING.m,
+        padding: SPACING.l,
+        ...SHADOWS.medium,
     },
     imageContainer: {
         alignSelf: 'center',
-        marginBottom: 20,
+        marginBottom: SPACING.xl,
+        marginTop: -SPACING.xxl - 20, // Pull up to overlap with header area
+        ...SHADOWS.small,
     },
     image: {
-        width: 100,
-        height: 100,
-        borderRadius: 50,
+        width: 120,
+        height: 120,
+        borderRadius: 60,
+        borderWidth: 4,
+        borderColor: COLORS.surface,
     },
     placeholder: {
-        width: 100,
-        height: 100,
-        borderRadius: 50,
-        backgroundColor: '#e0e0e0',
+        width: 120,
+        height: 120,
+        borderRadius: 60,
+        backgroundColor: COLORS.background,
         justifyContent: 'center',
         alignItems: 'center',
+        borderWidth: 4,
+        borderColor: COLORS.surface,
+    },
+    placeholderText: {
+        fontSize: FONTS.size.s,
+        color: COLORS.textSecondary,
+        marginTop: SPACING.xs,
+    },
+    editIconContainer: {
+        position: 'absolute',
+        bottom: 0,
+        right: 0,
+        backgroundColor: COLORS.primary,
+        width: 36,
+        height: 36,
+        borderRadius: 18,
+        justifyContent: 'center',
+        alignItems: 'center',
+        borderWidth: 3,
+        borderColor: COLORS.surface,
+    },
+    inputGroup: {
+        marginBottom: SPACING.l,
+    },
+    label: {
+        fontSize: FONTS.size.s,
+        color: COLORS.textSecondary,
+        marginBottom: SPACING.xs,
+        fontWeight: '600',
     },
     input: {
         borderWidth: 1,
-        borderColor: '#ccc',
-        padding: 10,
-        marginBottom: 15,
-        borderRadius: 5,
+        borderColor: COLORS.border,
+        padding: SPACING.m,
+        borderRadius: SPACING.s,
+        fontSize: FONTS.size.m,
+        color: COLORS.text,
+        backgroundColor: COLORS.background,
+    },
+    button: {
+        backgroundColor: COLORS.primary,
+        paddingVertical: SPACING.m,
+        borderRadius: SPACING.s,
+        alignItems: 'center',
+        marginTop: SPACING.s,
+        ...SHADOWS.small,
+    },
+    buttonText: {
+        color: COLORS.surface,
+        fontSize: FONTS.size.m,
+        fontWeight: 'bold',
     },
 });
 

@@ -1,5 +1,7 @@
+import { Ionicons } from '@expo/vector-icons';
 import React from 'react';
 import { Image, StyleSheet, Text, View } from 'react-native';
+import { COLORS, FONTS, SHADOWS, SPACING } from '../constants/theme';
 import { Note } from '../utils/storage';
 
 interface NoteCardProps {
@@ -13,9 +15,12 @@ const NoteCard: React.FC<NoteCardProps> = ({ note }) => {
             <View style={styles.content}>
                 <Text style={styles.text}>{note.text}</Text>
                 {note.location && (
-                    <Text style={styles.location}>
-                        Lat: {note.location.latitude?.toFixed(4)}, Long: {note.location.longitude?.toFixed(4)}
-                    </Text>
+                    <View style={styles.locationContainer}>
+                        <Ionicons name="location-sharp" size={14} color={COLORS.primary} style={{ marginRight: 4 }} />
+                        <Text style={styles.location}>
+                            {note.location.latitude?.toFixed(4)}, {note.location.longitude?.toFixed(4)}
+                        </Text>
+                    </View>
                 )}
             </View>
         </View>
@@ -24,35 +29,42 @@ const NoteCard: React.FC<NoteCardProps> = ({ note }) => {
 
 const styles = StyleSheet.create({
     card: {
-        backgroundColor: '#fff',
-        borderRadius: 8,
-        marginVertical: 8,
-        marginHorizontal: 16,
+        backgroundColor: COLORS.surface,
+        borderRadius: SPACING.m,
+        marginBottom: SPACING.m,
         overflow: 'hidden',
-        elevation: 3,
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.1,
-        shadowRadius: 2,
+        ...SHADOWS.small,
         borderWidth: 1,
-        borderColor: '#e0e0e0',
+        borderColor: COLORS.border,
     },
     image: {
         width: '100%',
-        height: 150,
+        height: 180,
         resizeMode: 'cover',
     },
     content: {
-        padding: 12,
+        padding: SPACING.m,
     },
     text: {
-        fontSize: 16,
-        color: '#333',
-        marginBottom: 8,
+        fontSize: FONTS.size.m,
+        color: COLORS.text,
+        marginBottom: SPACING.s,
+        lineHeight: 22,
+    },
+    locationContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        marginTop: SPACING.xs,
+        backgroundColor: COLORS.background,
+        paddingHorizontal: SPACING.s,
+        paddingVertical: SPACING.xs,
+        borderRadius: SPACING.s,
+        alignSelf: 'flex-start',
     },
     location: {
-        fontSize: 12,
-        color: '#666',
+        fontSize: FONTS.size.s,
+        color: COLORS.textSecondary,
+        fontWeight: '500',
     },
 });
 
