@@ -13,9 +13,11 @@ export interface NoteLocation {
 
 export interface Note {
     id: string;
-    text: string;
+    title: string;
+    description: string;
     image: string | null;
     location: NoteLocation | null;
+    isPinned?: boolean;
 }
 
 export const storeData = async (key: string, value: any): Promise<void> => {
@@ -34,5 +36,13 @@ export const getData = async <T>(key: string): Promise<T | null> => {
     } catch (e) {
         // error reading value
         return null;
+    }
+};
+
+export const removeData = async (key: string): Promise<void> => {
+    try {
+        await AsyncStorage.removeItem(key);
+    } catch (e) {
+        // error removing value
     }
 };

@@ -1,11 +1,19 @@
 import { Ionicons } from '@expo/vector-icons';
 import { useFocusEffect } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import React, { useState } from 'react';
-import { Image, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { Alert, Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { RootStackParamList } from '../App';
 import { COLORS, FONTS, SHADOWS, SPACING } from '../constants/theme';
-import { getData, Profile } from '../utils/storage';
+import { getData, Profile, removeData } from '../utils/storage';
 
-const ProfileScreen: React.FC = () => {
+type ProfileScreenNavigationProp = NativeStackNavigationProp<RootStackParamList, 'MainTabs'>;
+
+interface Props {
+    navigation: ProfileScreenNavigationProp;
+}
+
+const ProfileScreen: React.FC<Props> = ({ navigation }) => {
     const [profile, setProfile] = useState<Profile | null>(null);
 
     useFocusEffect(
@@ -18,6 +26,37 @@ const ProfileScreen: React.FC = () => {
         }, [])
     );
 
+    const handleEditProfile = () => {
+        if (profile) {
+            // @ts-ignore - Ignoring strict type check for now since we just updated App.tsx
+            navigation.navigate('ProfileSetup', { profile });
+        }
+    };
+
+    const handleLogout = () => {
+        Alert.alert(
+            'Logout',
+            'Are you sure you want to logout? All your data will remain, but you will need to sign in again.',
+            [
+                { text: 'Cancel', style: 'cancel' },
+                {
+                    text: 'Logout',
+                    style: 'destructive',
+                    onPress: async () => {
+                        await removeData('profile');
+                        // Navigate to Splash to re-check profile or straight to Setup
+                        // Since we are in a TabNavigator, we need to access the parent navigator
+                        // casting navigation as any to reset stack or replace
+                        navigation.reset({
+                            index: 0,
+                            routes: [{ name: 'ProfileSetup' }],
+                        });
+                    },
+                },
+            ]
+        );
+    };
+
     if (!profile) {
         return (
             <View style={styles.loadingContainer}>
@@ -29,6 +68,11 @@ const ProfileScreen: React.FC = () => {
     return (
         <ScrollView contentContainerStyle={styles.container}>
             <View style={styles.profileHeader}>
+                <View style={styles.headerTop}>
+                    <TouchableOpacity style={styles.editButton} onPress={handleEditProfile}>
+                        <Ionicons name="pencil" size={20} color={COLORS.primary} />
+                    </TouchableOpacity>
+                </View>
                 <View style={styles.imageContainer}>
                     {profile.image ? (
                         <Image source={{ uri: profile.image }} style={styles.image} />
@@ -71,6 +115,13 @@ const ProfileScreen: React.FC = () => {
                         <Text style={styles.settingLabel}>Dark Mode</Text>
                         <Text style={styles.comingSoon}>Coming Soon</Text>
                     </View>
+
+                    <View style={styles.divider} />
+
+                    <TouchableOpacity style={styles.row} onPress={handleLogout}>
+                        <Ionicons name="log-out-outline" size={20} color={COLORS.error} style={styles.icon} />
+                        <Text style={[styles.settingLabel, { color: COLORS.error }]}>Logout</Text>
+                    </TouchableOpacity>
                 </View>
             </View>
         </ScrollView>
@@ -97,6 +148,19 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         marginBottom: SPACING.xl,
         marginTop: SPACING.m,
+        width: '100%',
+    },
+    headerTop: {
+        width: '100%',
+        alignItems: 'flex-end',
+        marginBottom: -20, // Overlap or just spacing
+        zIndex: 1,
+    },
+    editButton: {
+        padding: SPACING.s,
+        backgroundColor: COLORS.surface,
+        borderRadius: 20,
+        ...SHADOWS.small,
     },
     imageContainer: {
         ...SHADOWS.medium,
@@ -166,7 +230,7 @@ const styles = StyleSheet.create({
         height: 1,
         backgroundColor: COLORS.border,
         marginVertical: SPACING.s,
-        marginLeft: 36, // Align with text start
+        marginLeft: 36,
     },
     settingLabel: {
         flex: 1,

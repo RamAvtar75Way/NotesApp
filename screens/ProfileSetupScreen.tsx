@@ -1,4 +1,5 @@
 import { Ionicons } from '@expo/vector-icons';
+import { RouteProp } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import * as ImagePicker from 'expo-image-picker';
 import React, { useState } from 'react';
@@ -9,14 +10,19 @@ import { Profile, storeData } from '../utils/storage';
 
 type ProfileSetupScreenNavigationProp = NativeStackNavigationProp<RootStackParamList, 'ProfileSetup'>;
 
+
+type ProfileSetupScreenRouteProp = RouteProp<RootStackParamList, 'ProfileSetup'>;
+
 interface Props {
     navigation: ProfileSetupScreenNavigationProp;
+    route: ProfileSetupScreenRouteProp;
 }
 
-const ProfileSetupScreen: React.FC<Props> = ({ navigation }) => {
-    const [name, setName] = useState<string>('');
-    const [email, setEmail] = useState<string>('');
-    const [image, setImage] = useState<string | null>(null);
+const ProfileSetupScreen: React.FC<Props> = ({ navigation, route }) => {
+    const existingProfile = route.params?.profile;
+    const [name, setName] = useState<string>(existingProfile?.name || '');
+    const [email, setEmail] = useState<string>(existingProfile?.email || '');
+    const [image, setImage] = useState<string | null>(existingProfile?.image || null);
 
     const pickImage = async () => {
         const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
@@ -45,15 +51,20 @@ const ProfileSetupScreen: React.FC<Props> = ({ navigation }) => {
 
         const profile: Profile = { name, email, image };
         await storeData('profile', profile);
-        navigation.replace('MainTabs');
+
+        if (existingProfile) {
+            navigation.goBack(); // Return to Profile screen if editing
+        } else {
+            navigation.replace('MainTabs'); // Go to Home if new setup
+        }
     };
 
     return (
         <SafeAreaView style={styles.safeArea}>
             <ScrollView contentContainerStyle={styles.container}>
                 <View style={styles.headerContainer}>
-                    <Text style={styles.header}>Create Profile</Text>
-                    <Text style={styles.subHeader}>Let's get you started</Text>
+                    <Text style={styles.header}>{existingProfile ? 'Edit Profile' : 'Create Profile'}</Text>
+                    <Text style={styles.subHeader}>{existingProfile ? 'Update your details' : "Let's get you started"}</Text>
                 </View>
 
                 <View style={styles.formContainer}>
@@ -96,7 +107,7 @@ const ProfileSetupScreen: React.FC<Props> = ({ navigation }) => {
                     </View>
 
                     <TouchableOpacity style={styles.button} onPress={saveProfile}>
-                        <Text style={styles.buttonText}>Save Profile</Text>
+                        <Text style={styles.buttonText}>{existingProfile ? 'Update Profile' : 'Save Profile'}</Text>
                     </TouchableOpacity>
                 </View>
             </ScrollView>

@@ -11,7 +11,7 @@ import SplashScreen from './screens/SplashScreen';
 
 export type RootStackParamList = {
     Splash: undefined;
-    ProfileSetup: undefined;
+    ProfileSetup: { profile?: import('./utils/storage').Profile };
     MainTabs: undefined;
     AddNote: undefined;
 };

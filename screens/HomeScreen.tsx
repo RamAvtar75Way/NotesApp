@@ -6,7 +6,7 @@ import { FlatList, StatusBar, StyleSheet, Text, TouchableOpacity, View } from 'r
 import { RootStackParamList } from '../App';
 import NoteCard from '../components/NoteCard';
 import { COLORS, FONTS, SHADOWS, SPACING } from '../constants/theme';
-import { getData, Note } from '../utils/storage';
+import { getData, Note, storeData } from '../utils/storage';
 
 type HomeScreenNavigationProp = NativeStackNavigationProp<RootStackParamList, 'AddNote'>;
 
@@ -17,19 +17,44 @@ interface Props {
 const HomeScreen: React.FC<Props> = ({ navigation }) => {
     const [notes, setNotes] = useState<Note[]>([]);
 
+    const fetchNotes = useCallback(async () => {
+        const storedNotes = await getData<Note[]>('notes');
+        if (storedNotes) {
+            // Sort notes: Pinned first, then by date (newest first)
+            const sortedNotes = storedNotes.sort((a, b) => {
+                if (a.isPinned === b.isPinned) {
+                    return Number(b.id) - Number(a.id);
+                }
+                return a.isPinned ? -1 : 1;
+            });
+            setNotes(sortedNotes);
+        }
+    }, []);
+
     useFocusEffect(
         useCallback(() => {
-            const fetchNotes = async () => {
-                const storedNotes = await getData<Note[]>('notes');
-                if (storedNotes) {
-                    // Sort notes by date (newest first)
-                    const sortedNotes = storedNotes.sort((a, b) => Number(b.id) - Number(a.id));
-                    setNotes(sortedNotes);
-                }
-            };
             fetchNotes();
-        }, [])
+        }, [fetchNotes])
     );
+
+    const togglePin = async (note: Note) => {
+        const updatedNotes = notes.map(n =>
+            n.id === note.id ? { ...n, isPinned: !n.isPinned } : n
+        );
+
+        // Update local state immediately for UI response
+        setNotes(updatedNotes.sort((a, b) => {
+            if (a.isPinned === b.isPinned) {
+                return Number(b.id) - Number(a.id);
+            }
+            return a.isPinned ? -1 : 1;
+        }));
+
+        // Persist to storage
+        await storeData('notes', updatedNotes);
+        // Re-fetch to ensure perfect sync (optional, but good for consistency)
+        fetchNotes();
+    };
 
     return (
         <View style={styles.container}>
@@ -44,7 +69,12 @@ const HomeScreen: React.FC<Props> = ({ navigation }) => {
                 <FlatList
                     data={notes}
                     keyExtractor={(item) => item.id}
-                    renderItem={({ item }) => <NoteCard note={item} />}
+                    renderItem={({ item }) => (
+                        <NoteCard
+                            note={item}
+                            onPinPress={togglePin}
+                        />
+                    )}
                     contentContainerStyle={styles.list}
                     showsVerticalScrollIndicator={false}
                 />
