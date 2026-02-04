@@ -1,50 +1,66 @@
-# Welcome to your Expo app 👋
+# Offline Notes App 📝
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+A beautiful, fast, and private offline notes application built with React Native and Expo. Seamlessly capture your thoughts with text, images, and location tags.
 
-## Get started
+## ✨ Features
 
-1. Install dependencies
+- **Offline First**: All data is stored locally on your device for instant access and privacy.
+- **Rich Notes**:
+  - **Title & Description**: Organize thoughts clearly.
+  - **Images**: Attach photos from your gallery.
+  - **Location**: Tag notes with your current location.
+- **Pin Notes**: Pin important notes to the top of your list for quick access.
+- **User Profile**:
+  - Personalized profile with avatar, name, and email.
+  - **Edit Profile**: Update your details anytime.
+- **Premium UI/UX**:
+  - Custom Splash Screen with animations.
+  - Modern, clean design with a curated color palette.
+  - Smooth transitions and interactive elements.
 
+## 📱 Screens
+
+1. **Splash Screen**: Animated logo intro with auto-login check.
+2. **Profile Setup**: Create or edit your user identity.
+3. **Home**: View your list of notes, sorted by pinned status and date.
+4. **Add Note**: A dedicated editor with title/description inputs and media tools.
+5. **Profile**: View account details and manage settings.
+
+## 🛠 Tech Stack
+
+- **Framework**: [React Native](https://reactnative.dev/) (via [Expo](https://expo.dev/))
+- **Language**: TypeScript
+- **Navigation**: React Navigation (Native Stack & Bottom Tabs)
+- **Storage**: AsyncStorage (Persistent offline data)
+- **Native Features**:
+  - `expo-image-picker` (Media access)
+  - `expo-location` (Geolocation)
+  - `expo-splash-screen` (Launch experience)
+- **Icons**: Ionicons (@expo/vector-icons)
+
+## 🚀 Getting Started
+
+1. **Install Dependencies**
    ```bash
    npm install
    ```
 
-2. Start the app
-
+2. **Start the App**
    ```bash
    npx expo start
    ```
 
-In the output, you'll find options to open the app in a
+3. **Run on Device**
+   - Scan the QR code with the **Expo Go** app (Android/iOS).
+   - Or press `a` for Android Emulator / `i` for iOS Simulator.
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+## 🎨 Design
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
+The app features a custom design system with:
+- **Primary Color**: Deep Purple/Pink gradient style.
+- **Surface**: Clean white cards with soft shadows.
+- **Typography**: Modern and readable fonts.
 
-## Get a fresh project
+---
 
-When you're ready, run:
-
-```bash
-npm run reset-project
-```
-
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
-
-## Learn more
-
-To learn more about developing your project with Expo, look at the following resources:
-
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
-
-## Join the community
-
-Join our community of developers creating universal apps.
-
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+*Built with ❤️ using Expo.*
